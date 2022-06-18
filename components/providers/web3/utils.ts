@@ -1,5 +1,6 @@
 import {MetaMaskInpageProvider} from "@metamask/providers";
 import {Contract, providers} from "ethers";
+import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
 
 declare global {
     interface Window {
@@ -24,4 +25,8 @@ export const createDefaultState = () => {
         contract: null,
         isLoading: true
     }
+}
+
+export const loadContract = async (name: string, provider: Web3Provider) => {
+
 }
