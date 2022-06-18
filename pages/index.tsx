@@ -5,15 +5,21 @@ import {BaseLayout, NftList} from '@ui'
 import nfts from "../content/meta.json"
 import {NftMeta} from "@_types/nft";
 import {useWeb3} from "@providers/web3";
-import {useEffect} from "react";
 
 const Home: NextPage = () => {
-    const { provider } = useWeb3();
-    console.log(provider);
+    const { provider, contract } = useWeb3();
+    console.log(contract);
+
+    const getNftInfo = async () => {
+        console.log(await contract!.name());
+        console.log(await contract!.symbol());
+    }
+    if(contract) {
+        getNftInfo();
+    }
 
     const getAccounts = async () => {
         const accounts = await provider?.listAccounts();
-        console.log(accounts);
     }
 
     if(provider) {
