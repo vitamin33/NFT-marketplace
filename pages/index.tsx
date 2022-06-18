@@ -3,7 +3,7 @@
 import type {NextPage} from 'next'
 import {BaseLayout, NftList} from '../components'
 import nfts from "../content/meta.json"
-import {NftMeta} from "../types/types";
+import {NftMeta} from "../types/nft";
 
 const Home: NextPage = () => {
     return (
