@@ -3,7 +3,9 @@ import {CryptoHookFactory} from "@_types/hooks";
 import {useEffect} from "react";
 
 type UseAccountResponse = {
-    connect: () => void
+    connect: () => void;
+    isLoading: boolean;
+    isInstalled: boolean;
 }
 
 type AccountHookFactory = CryptoHookFactory<string, UseAccountResponse>
@@ -13,10 +15,11 @@ export type UseAccountHook = ReturnType<AccountHookFactory>
 // deps -> provider, ethereum, contract (web3State)
 export const hookFactory: AccountHookFactory = ({
                                                     ethereum,
-                                                    provider
-}) => (params) => {
+                                                    provider,
+                                                    isLoading
+}) => () => {
 
-    const { data, mutate, ...swr} = useSwr(
+    const { data, mutate, isValidating, ...swr} = useSwr(
         provider ? "web3/useAccount" : null,
         async () => {
             const accounts = await provider!.listAccounts();
@@ -57,6 +60,9 @@ export const hookFactory: AccountHookFactory = ({
     return {
         ...swr,
         data,
+        isValidating: isValidating,
+        isLoading: isLoading || isValidating,
+        isInstalled: ethereum?.isMetaMask || false,
         mutate,
         connect
     };
