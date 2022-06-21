@@ -4,7 +4,7 @@ import {useEffect} from "react";
 
 type UseAccountResponse = {
     connect: () => void;
-    isLoading: boolean;
+    isLoading: boolean | undefined;
     isInstalled: boolean;
 }
 
@@ -61,7 +61,7 @@ export const hookFactory: AccountHookFactory = ({
         ...swr,
         data,
         isValidating: isValidating,
-        isLoading: isLoading || isValidating,
+        isLoading: isLoading as boolean,
         isInstalled: ethereum?.isMetaMask || false,
         mutate,
         connect
