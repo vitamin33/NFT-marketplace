@@ -12,8 +12,17 @@ contract("NftMarket", accounts => {
 
     describe("Mint token", () => {
 
-        it("should resolve into true value", () => {
-            assert(true, "Value is not true")
+        const tokenURI = "https://test.com"
+        before(async () => {
+            await _contract.mintToken(tokenURI, {
+                from: accounts[0]
+            })
+        })
+
+        it("owner of first token should be address[0]", async () => {
+            const owner = await _contract.ownerOf(1);
+
+            assert.equal(owner, accounts[0], "Owner of token is not matching accounts[0")
         })
     })
 })
