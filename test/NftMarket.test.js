@@ -1,3 +1,4 @@
+const truffleAssert = require('truffle-assertions');
 const assert = require("assert");
 
 const NftMarket = artifacts.require("NftMarket")
@@ -29,6 +30,23 @@ contract("NftMarket", accounts => {
             const actualTokenURI = await _contract.tokenURI(1);
 
             assert.equal(actualTokenURI, tokenURI, "Token URI is not correctly set")
+        })
+        it("should not be possible to create two NFTs with the same URI", async () => {
+           // try {
+           //     await _contract.mintToken(tokenURI, {
+           //         from: accounts[0]
+           //     })
+           // } catch (e) {
+           //     assert(e, "NFT was minted with previously used token URI")
+           // }
+
+            await truffleAssert.fails(
+                _contract.mintToken(tokenURI, {
+                    from: accounts[0]
+                }),
+                truffleAssert.ErrorType.REVERT,
+                "Token URI already exists!"
+            );
         })
     })
 })
