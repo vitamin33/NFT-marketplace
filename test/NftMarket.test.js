@@ -15,7 +15,7 @@ contract("NftMarket", accounts => {
 
         const tokenURI = "https://test.com"
         before(async () => {
-            await _contract.mintToken(tokenURI, {
+            await _contract.mintToken(tokenURI, 100, {
                 from: accounts[0]
             })
         })
@@ -41,7 +41,7 @@ contract("NftMarket", accounts => {
            // }
 
             await truffleAssert.fails(
-                _contract.mintToken(tokenURI, {
+                _contract.mintToken(tokenURI, 100, {
                     from: accounts[0]
                 }),
                 truffleAssert.ErrorType.REVERT,
