@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract NftMarket is ERC721URIStorage {
 
-    using Counters for Counters.Counters;
+    using Counters for Counters.Counter;
 
     Counters.Counter private _listedItems;
     Counters.Counter private _tokenIds;
