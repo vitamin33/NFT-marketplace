@@ -7,18 +7,20 @@ contract NftMarket is ERC721URIStorage {
 
     using Counters for Counters.Counter;
 
-    Counters.Counter private _listedItems;
-    Counters.Counter private _tokenIds;
-
-    mapping(string => bool) private _usedTokenURIs;
-    mapping(uint => NftItem) private _idToNftItem;
-
     struct NftItem {
         uint tokenId;
         uint price;
         address creator;
         bool isListed;
     }
+
+    uint public listingPrice = 0.005 ether;
+
+    Counters.Counter private _listedItems;
+    Counters.Counter private _tokenIds;
+
+    mapping(string => bool) private _usedTokenURIs;
+    mapping(uint => NftItem) private _idToNftItem;
 
     event NftItemCreated(
         uint tokenId,
@@ -31,6 +33,7 @@ contract NftMarket is ERC721URIStorage {
 
     function mintToken(string memory tokenURI, uint price) public payable returns (uint) {
         require(!tokenUriExists(tokenURI), "Token URI already exists!");
+        require(msg.value == listingPrice, "Price must be equal to listing price");
 
         _tokenIds.increment();
         _listedItems.increment();
@@ -58,6 +61,20 @@ contract NftMarket is ERC721URIStorage {
         );
 
         emit NftItemCreated(tokenId, price, msg.sender, true);
+    }
+
+    function buyNft(uint tokenId) public payable {
+        uint price = _idToNftItem[tokenId].price;
+        address owner = ERC721.ownerOf(tokenId);
+
+        require(msg.sender != owner, "You already own this NFT item");
+        require(msg.value == price, "Please submit the asking price");
+
+        _idToNftItem[tokenId].isListed = false;
+        _listedItems.decrement();
+
+        ERC721._transfer(owner, msg.sender, tokenId);
+        payable(owner).transfer(msg.value);
     }
 
     function getNftItem(uint tokenId) public view returns(NftItem memory) {
