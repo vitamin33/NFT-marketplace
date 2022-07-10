@@ -53,7 +53,15 @@ contract("NftMarket", accounts => {
         it("should be one listed item", async () => {
             const listedItems = await _contract.listedItemsCount();
 
-            assert.equal(listedItems.toNumber(), 1, "listed item count is not 1")
+            assert.equal(listedItems.toNumber(), 1, "Listed item count is not 1")
+        })
+        it("should have create NFT item", async () => {
+            const nft = await _contract.getNftItem(1);
+
+            assert.equal(nft.tokenId, 1, "TokenId is not 1");
+            assert.equal(nft.price, _nftPrice, "NFT item price is not correct");
+            assert.equal(nft.creator, accounts[0], "Creator address is not correct");
+            assert.equal(nft.isListed, true, "NFT item isListed parameter is not correct");
         })
     })
 })

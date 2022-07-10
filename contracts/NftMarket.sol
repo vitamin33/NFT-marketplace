@@ -60,7 +60,7 @@ contract NftMarket is ERC721URIStorage {
         emit NftItemCreated(tokenId, price, msg.sender, true);
     }
 
-    function getNftItem(uint tokenId) public returns(NftItem memory) {
+    function getNftItem(uint tokenId) public view returns(NftItem memory) {
         return _idToNftItem[tokenId];
     }
 
