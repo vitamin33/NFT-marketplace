@@ -67,4 +67,26 @@ contract("NftMarket", accounts => {
             assert.equal(nft.isListed, true, "NFT item isListed parameter is not correct");
         })
     })
+
+    describe("Buy NFT", () => {
+        before(async () => {
+            await _contract.buyNft(1, {
+                from: accounts[1],
+                value: _nftPrice
+            })
+        })
+
+        it("should unlist the item", async () => {
+            let listedItem = await _contract.getNftItem(1);
+            assert.equal(listedItem.isListed, false, "Item is still listed");
+        })
+        it("should decreased listed item counts", async () => {
+            let itemsCount = await _contract.listedItemsCount();
+            assert.equal(itemsCount.toNumber(), 0, "Count of items should be decremented");
+        })
+        it("should change the owner", async () => {
+            let owner = await _contract.ownerOf(1);
+            assert.equal(owner, accounts[1], "Item is still listed");
+        })
+    })
 })
