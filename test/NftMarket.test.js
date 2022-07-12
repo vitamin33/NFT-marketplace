@@ -36,14 +36,6 @@ contract("NftMarket", accounts => {
             assert.equal(actualTokenURI, tokenURI, "Token URI is not correctly set")
         })
         it("should not be possible to create two NFTs with the same URI", async () => {
-           // try {
-           //     await _contract.mintToken(tokenURI, {
-           //         from: accounts[0]
-           //     })
-           // } catch (e) {
-           //     assert(e, "NFT was minted with previously used token URI")
-           // }
-
             await truffleAssert.fails(
                 _contract.mintToken(tokenURI, _nftPrice, {
                     from: accounts[0],
@@ -87,6 +79,27 @@ contract("NftMarket", accounts => {
         it("should change the owner", async () => {
             let owner = await _contract.ownerOf(1);
             assert.equal(owner, accounts[1], "Item is still listed");
+        })
+    })
+
+    describe("Token transfers", () => {
+        const tokenURI = "https://token-json2.com";
+        before(async () => {
+            await _contract.mintToken(tokenURI, _nftPrice, {
+                from: accounts[0],
+                value: _listingPrice
+            })
+        })
+        it("should have two NFTs created", async () => {
+            const totalSupply = await _contract.totalSupply();
+            assert.equal(totalSupply.toNumber(), 2, "Total supply of token is not correct");
+        })
+        it("should be able to retrieve token by index", async () => {
+            const tokenId1 = await _contract.tokenByIndex(0);
+            const tokenId2 = await _contract.tokenByIndex(1);
+
+            assert.equal(tokenId1.toNumber(), 1, "First token id is wrong");
+            assert.equal(tokenId2.toNumber(), 2, "Second token id is wrong");
         })
     })
 })

@@ -19,8 +19,12 @@ contract NftMarket is ERC721URIStorage {
     Counters.Counter private _listedItems;
     Counters.Counter private _tokenIds;
 
+    uint256[] private _allNfts;
+
     mapping(string => bool) private _usedTokenURIs;
     mapping(uint => NftItem) private _idToNftItem;
+
+    mapping(uint => uint) private _idToNftIndex;
 
     event NftItemCreated(
         uint tokenId,
@@ -30,6 +34,16 @@ contract NftMarket is ERC721URIStorage {
     );
 
     constructor() ERC721("Vitamin NFT Market", "VNFT") {}
+
+    function totalSupply() public view returns(uint) {
+        return _allNfts.length;
+    }
+
+    function tokenByIndex(uint index) public view returns(uint) {
+        require(index < totalSupply(), "Index out of the bounds");
+
+        return _allNfts[index];
+    }
 
     function mintToken(string memory tokenURI, uint price) public payable returns (uint) {
         require(!tokenUriExists(tokenURI), "Token URI already exists!");
@@ -77,15 +91,32 @@ contract NftMarket is ERC721URIStorage {
         payable(owner).transfer(msg.value);
     }
 
-    function getNftItem(uint tokenId) public view returns(NftItem memory) {
+    function getNftItem(uint tokenId) public view returns (NftItem memory) {
         return _idToNftItem[tokenId];
     }
 
-    function listedItemsCount() public view returns(uint) {
+    function listedItemsCount() public view returns (uint) {
         return _listedItems.current();
     }
 
     function tokenUriExists(string memory tokenURI) private returns (bool) {
         return _usedTokenURIs[tokenURI] == true;
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint tokenId
+    ) internal virtual override {
+        super._beforeTokenTransfer(from, to, tokenId);
+
+        if (from == address(0)) {
+            _addTokenToAllTokensEnumeration(tokenId);
+        }
+    }
+
+    function _addTokenToAllTokensEnumeration(uint tokenId) private {
+        _idToNftIndex[tokenId] = _allNfts.length;
+        _allNfts.push(tokenId);
     }
 }
