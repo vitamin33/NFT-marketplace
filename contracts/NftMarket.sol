@@ -19,11 +19,13 @@ contract NftMarket is ERC721URIStorage {
     Counters.Counter private _listedItems;
     Counters.Counter private _tokenIds;
 
-    uint256[] private _allNfts;
-
     mapping(string => bool) private _usedTokenURIs;
     mapping(uint => NftItem) private _idToNftItem;
 
+    mapping(address => mapping(uint => uint)) private _ownedTokens;
+    mapping(uint => uint) private _idToOwnedIndex;
+
+    uint256[] private _allNfts;
     mapping(uint => uint) private _idToNftIndex;
 
     event NftItemCreated(
@@ -45,6 +47,12 @@ contract NftMarket is ERC721URIStorage {
         return _allNfts[index];
     }
 
+    function tokenOfOwnerByIndex(address owner, uint index) public view returns(uint) {
+        require(index < ERC721.balanceOf(owner), "Index out of the bounds");
+
+        return _ownedTokens[owner][index];
+    }
+
     function getAllNftsOnSale() public view returns(NftItem[] memory) {
         uint allItemsCount = totalSupply();
         uint currentIndex = 0;
@@ -59,6 +67,19 @@ contract NftMarket is ERC721URIStorage {
                 currentIndex += 1;
             }
         }
+        return items;
+    }
+
+    function getOwnedNfts() public view returns(NftItem[] memory) {
+        uint ownedItemsCount = ERC721.balanceOf(msg.sender);
+        NftItem[] memory items = new NftItem[](ownedItemsCount);
+
+        for(uint i = 0; i < ownedItemsCount; i++) {
+            uint tokenId = tokenOfOwnerByIndex(msg.sender, i);
+            NftItem storage item = _idToNftItem[tokenId];
+            items[i] = item;
+        }
+
         return items;
     }
 
@@ -130,10 +151,20 @@ contract NftMarket is ERC721URIStorage {
         if (from == address(0)) {
             _addTokenToAllTokensEnumeration(tokenId);
         }
+        if (to != from) {
+            _addTokenToOwnerEnumeration(to, tokenId);
+        }
     }
 
     function _addTokenToAllTokensEnumeration(uint tokenId) private {
         _idToNftIndex[tokenId] = _allNfts.length;
         _allNfts.push(tokenId);
+    }
+
+    function _addTokenToOwnerEnumeration(address to, uint tokenId) private {
+        uint length = ERC721.balanceOf(to);
+
+        _ownedTokens[to][length] = tokenId;
+        _idToOwnedIndex[tokenId] = length;
     }
 }
