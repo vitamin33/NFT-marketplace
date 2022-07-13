@@ -111,9 +111,6 @@ contract("NftMarket", accounts => {
                 from: accounts[1]
             });
 
-            console.log(ownedNfts);
-
-            assert.equal(ownedNfts.length, 1, "Wrong amaount of owned NFTs by account 1");
             assert.equal(ownedNfts[0].tokenId, 1, "Wrong amaount of owned NFTs by account 1");
         })
         it("account[0] should have one owned NFT", async () => {
@@ -121,10 +118,30 @@ contract("NftMarket", accounts => {
                 from: accounts[0]
             });
 
-            console.log(ownedNfts);
-
-            assert.equal(ownedNfts.length, 1, "Wrong amaount of owned NFTs by account 0");
             assert.equal(ownedNfts[0].tokenId, 2, "Wrong amaount of owned NFTs by account 0");
+        })
+    })
+
+    describe("Token transfer to new owner", () => {
+        before(async () => {
+            await _contract.transferFrom(
+                accounts[0],
+                accounts[1],
+                2
+            )
+        })
+
+        it("account[0] should own 0 tokens", async () => {
+            const ownedNfts0 = await _contract.getOwnedNfts({
+                from: accounts[0]
+            })
+            assert.equal(ownedNfts0.length, 0, "Invalid length of tokens for account[0]");
+        })
+        it("account[1] should own 2 tokens", async () => {
+            const ownedNfts1 = await _contract.getOwnedNfts({
+                from: accounts[1]
+            })
+            assert.equal(ownedNfts1.length, 2, "Invalid length of tokens for account[1]");
         })
     })
 })
