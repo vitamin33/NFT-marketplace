@@ -1,7 +1,6 @@
 import {createContext, FunctionComponent, ReactElement, useContext, useEffect, useState} from "react";
 import {createDefaultState, createWeb3State, loadContract, Web3State} from "@providers/web3/utils";
 import {ethers} from "ethers";
-import {setupHooks} from "@hooks/web3/setupHooks";
 import {MetaMaskInpageProvider} from "@metamask/providers";
 import {NftMarketContract} from "@_types/nftMarketContract";
 
