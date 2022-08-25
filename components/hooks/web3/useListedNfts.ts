@@ -2,6 +2,7 @@ import useSwr from "swr";
 import {CryptoHookFactory} from "@_types/hooks";
 import {Nft} from "@_types/nft";
 import {ethers} from "ethersv5";
+import {useCallback} from "react";
 
 type UseListedNftsResponse = {
     buyNft: (tokenId: number, value: number) => Promise<void>
@@ -38,9 +39,10 @@ export const hookFactory: ListedNftsHookFactory = ({ contract}) => () => {
         }
     )
 
-    const buyNft = async (tokenId: number, value: number) => {
+    const _contract = contract;
+    const buyNft = useCallback(async (tokenId: number, value: number) => {
         try {
-            const buyResult = await contract?.buyNft(tokenId, {
+            const buyResult = await _contract!.buyNft(tokenId, {
                 value: ethers.utils.parseEther(value.toString())
             })
 
@@ -50,7 +52,7 @@ export const hookFactory: ListedNftsHookFactory = ({ contract}) => () => {
         } catch (e: any) {
             console.error(e.message)
         }
-    }
+    }, [_contract])
 
     return {
         ...swr,
