@@ -1,0 +1,19 @@
+{
+  "description": "Black Glove with Aurora icon.",
+  "image": "https://gateway.pinata.cloud/ipfs/QmTvStYvdUf7JkMR9mw6YbqEb8wKS2EiEQKKt9QM2cA7y3",
+  "name": "Aurora Glove",
+  "attributes": [
+    {
+      "trait_type": "attack",
+      "value": "50"
+    },
+    {
+      "trait_type": "health",
+      "value": "70"
+    },
+    {
+      "trait_type": "speed",
+      "value": "90"
+    }
+  ]
+}

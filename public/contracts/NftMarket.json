@@ -32557,12 +32557,12 @@
         }
       },
       "links": {},
-      "address": "0xE05d61D45f7F38A45CCCa58fBa99cf1d82584dCe",
-      "transactionHash": "0x93181b679d2ccbb15b257b69e1c24cd3bc5c7ed01d89022f29d2ca76f08e3881"
+      "address": "0x57023220fc527DDccf9e9C0849eb3593C91245E0",
+      "transactionHash": "0xd11804a8007195b61fd0bb1a50abaec01966e48044b68ee5193c5056ebb34955"
     }
   },
   "schemaVersion": "3.4.7",
-  "updatedAt": "2022-07-24T08:23:34.396Z",
+  "updatedAt": "2022-08-22T07:35:22.725Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
