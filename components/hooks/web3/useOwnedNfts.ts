@@ -4,7 +4,7 @@ import {Nft} from "@_types/nft";
 import {ethers} from "ethersv5";
 
 type UseOwnedNftsResponse = {
-
+    listNft: (tokenId: number, price: number) => Promise<void>
 }
 
 type OwnedNftsHookFactory = CryptoHookFactory<any, UseOwnedNftsResponse>
@@ -38,8 +38,26 @@ export const hookFactory: OwnedNftsHookFactory = ({ contract}) => () => {
         }
     )
 
+    const listNft = async (tokenId: number, price: number) => {
+        try {
+            const listResult = await contract?.placeNftOnSale(
+                tokenId,
+                ethers.utils.parseEther(price.toString()),
+                {
+                value: ethers.utils.parseEther(0.005.toString())
+            })
+
+            await listResult?.wait();
+
+            alert("Your NFT has been listed.")
+        } catch (e: any) {
+            console.error(e.message)
+        }
+    }
+
     return {
         ...swr,
+        listNft,
         data: data || [],
     };
 }
