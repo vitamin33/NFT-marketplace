@@ -1,16 +1,35 @@
 /* eslint-disable @next/next/no-img-element */
 
 import type { NextPage } from 'next'
-import { useState } from 'react';
+import {ChangeEvent, useState} from 'react';
 import { BaseLayout } from '@ui'
 import { Switch } from '@headlessui/react'
 import Link from 'next/link'
-
-const ATTRIBUTES = ["health", "attack", "speed"]
+import {NftMeta} from "@_types/nft";
 
 const NftCreate: NextPage = () => {
     const [nftURI, setNftURI] = useState("");
     const [hasURI, setHasURI] = useState(false);
+    const [nftMeta, setNftMeta] = useState<NftMeta>({
+        name: "",
+        description: "",
+        image: "",
+        attributes: [
+            {trait_type: "attack", value: "0"},
+            {trait_type: "health", value: "0"},
+            {trait_type: "speed", value: "0"},
+        ]
+    })
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setNftMeta({...nftMeta, [name]: value});
+    }
+
+    const createNft = () => {
+        console.log(nftMeta)
+    }
+
     return (
         <BaseLayout>
             <div>
@@ -126,6 +145,8 @@ const NftCreate: NextPage = () => {
                                             </label>
                                             <div className="mt-1 flex rounded-md shadow-sm">
                                                 <input
+                                                    value={nftMeta.name}
+                                                    onChange={handleChange}
                                                     type="text"
                                                     name="name"
                                                     id="name"
@@ -140,12 +161,13 @@ const NftCreate: NextPage = () => {
                                             </label>
                                             <div className="mt-1">
                       <textarea
+                          value={nftMeta.description}
+                          onChange={handleChange}
                           id="description"
                           name="description"
                           rows={3}
                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
                           placeholder="Some nft description..."
-                          defaultValue={''}
                       />
                                             </div>
                                             <p className="mt-2 text-sm text-gray-500">
@@ -194,15 +216,17 @@ const NftCreate: NextPage = () => {
                                             </div>
                                         }
                                         <div className="grid grid-cols-6 gap-6">
-                                            { ATTRIBUTES.map(attribute =>
-                                                <div key={attribute} className="col-span-6 sm:col-span-6 lg:col-span-2">
-                                                    <label htmlFor={attribute} className="block text-sm font-medium text-gray-700">
-                                                        {attribute}
+                                            { nftMeta.attributes.map(attribute =>
+                                                <div key={attribute.trait_type} className="col-span-6 sm:col-span-6 lg:col-span-2">
+                                                    <label htmlFor={attribute.trait_type} className="block text-sm font-medium text-gray-700">
+                                                        {attribute.trait_type}
                                                     </label>
                                                     <input
+                                                        value={attribute.value}
+                                                        onChange={() => {}}
                                                         type="text"
-                                                        name={attribute}
-                                                        id={attribute}
+                                                        name={attribute.trait_type}
+                                                        id={attribute.trait_type}
                                                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                     />
                                                 </div>
@@ -214,10 +238,11 @@ const NftCreate: NextPage = () => {
                                     </div>
                                     <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                         <button
+                                            onClick={createNft}
                                             type="button"
                                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
-                                            Save
+                                            List
                                         </button>
                                     </div>
                                 </div>
